@@ -6,13 +6,6 @@ import watch2 from "./img/watch2.jpeg";
 import watch3 from "./img/watch3.jpeg";
 import watch4 from "./img/watch4.jpeg";
 import watch5 from "./img/watch5.jpeg";
-import watch6 from "./img/watch6.jpeg";
-import watch7 from "./img/watch7.jpeg";
-import watch8 from "./img/watch8.jpeg";
-import watch9 from "./img/watch9.jpeg";
-import watch10 from "./img/watch10.jpeg";
-
-
 
 const Product = ()=> {
     
@@ -53,70 +46,49 @@ const Product = ()=> {
             name: "watch 5",
             price:31000,
             id: 5
-        },
-        {
-            Image: watch6,
-            name: "watch 6",
-            price:31000,
-            id: 6
-        },
-        {
-            Image: watch7,
-            name: "watch 7",
-            price:31000,
-            id: 7
-        }, 
-        {
-            Image: watch8,
-            name: "watch 8",
-            price:31000,
-            id: 8
-        },
-        {   
-            Image: watch9,
-            name: "watch 9",
-            price:31000,
-            id: 9
-        },
-        {   Image: watch10,
-            name: "watch 10",
-            price:31000,
-            id: 10
         }
         
     ]
+    let cartItems = [];
+    let cartList = [];
     
     const submitHandler = (e) =>{
-        let cartList = JSON.parse(localStorage.getItem('cart-Items') || '[]');
-        cartList.push(cartItems);
-        localStorage.setItem('cart-Items', JSON.stringify(cartList));
-       
+        cartList.push(JSON.parse(localStorage.getItem('cart-Items') || '[]'));
+        localStorage.setItem('cart-Items', JSON.stringify(cartItems));
+       console.log(cartList);
+
     }
 
     const addToCart = (id) =>{
        
         const findProduct = (product) => {
-            return product.id ===  3;
+            return product.id ===  1;
         }
         const finder = products.find(findProduct);
         cartItems.push(finder);
-        console.log(cartItems);
-        
         submitHandler();
     }
     
-    let cartItems = [];
-    
+   
+    const removeFromCart=(index)=>{
+        const newCart = cartList.filter((carted, idx) => idx !== index)
+        localStorage.setItem('cart-Items', JSON.stringify(newCart));
+        setCart(newCart);
+        console.log(index);
+
+    }
    
 
     useEffect(()=>{
         getCartFromLS();
+        addToCart();
     }, [])
+    
 
     return (
         <div>
            <div className='grid m-auto w-full xl:grid-cols-4 gap-10 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1'>
-            { products && products.map((produce) => (
+            { products && products.map((produce, index) => (
                     
                     <div className='w-[300px]  h-[300px] m-auto bg-[grey] shadow-2xl'>
                         <div className='w-full h-[200px] m-auto rounded-lg'><img className='w-full h-full ' src={produce.Image}/></div>
@@ -130,18 +102,21 @@ const Product = ()=> {
             }
            </div>
 
-            <div>
-               <p> my cart list</p>
-
-                <div>
-                    { cart && cart.map((myCart, index) => (
-                        <div>
-                            <p>{myCart.price}</p>
-                            <p>{myCart.name}</p>
-                                                                                    
-                        </div>
-                    ))
-
+            <div className='bg-gray-300 my-[50px]'>
+               <p className='text-[20px] text-center p-[20px]'>MY CART </p>
+               <div className='grid m-auto w-full xl:grid-cols-4 gap-10 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1'>
+                    { cart   && cart.map((myCart, index) => (                            
+                        <div className='w-[250px]  h-[300px] m-auto bg-[grey] shadow-2xl'>
+                            <div className='w-full h-[200px] m-auto rounded-lg'>
+                                <img className='w-full h-full ' src={myCart.Image}/>
+                            </div>
+                            <p className='text-black text-center pt-[5px]'> USD {myCart.name}</p>
+                            <p className='text-black text-center pt-[5px]'> USD {myCart.price}</p>
+                            <div className='w-full px-[20px]'>
+                                <button className='m-auto w-full p-[8px]' onClick={()=> removeFromCart(index)}> remove</button>    
+                            </div>    
+                        </div>                                
+                        ))
                     }
                 </div>
             </div>
