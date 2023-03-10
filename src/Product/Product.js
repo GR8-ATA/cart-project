@@ -13,6 +13,7 @@ const Product = ()=> {
 
     const getCartFromLS =()=>{
         setCart(JSON.parse(localStorage.getItem('cart-Items') || '[]'))
+        console.log("working");
     }
 
     const products = [
@@ -53,48 +54,54 @@ const Product = ()=> {
     let cartList = [];
     
     const submitHandler = (e) =>{
-        cartList.push(JSON.parse(localStorage.getItem('cart-Items') || '[]'));
+       
         localStorage.setItem('cart-Items', JSON.stringify(cartItems));
+        cartList.push(JSON.parse(localStorage.getItem('cart-Items') || '[]'));
        console.log(cartList);
+       console.log(cartItems);
+
 
     }
 
     const addToCart = (id) =>{
        
         const findProduct = (product) => {
-            return product.id ===  1;
+            return product.id ===  id ;
         }
         const finder = products.find(findProduct);
         cartItems.push(finder);
-        submitHandler();
+        cartList.push({cart, finder} );
+        console.log(cartList);
+        // console.log(cart);
+        submitHandler();        
     }
     
-   
+  
     const removeFromCart=(index)=>{
-        const newCart = cartList.filter((carted, idx) => idx !== index)
+        console.log(cartList);
+        const newCart = cart.filter((carted, idx) => idx !== index)
         localStorage.setItem('cart-Items', JSON.stringify(newCart));
         setCart(newCart);
-        console.log(index);
-
+        console.log(newCart);
+        console.log(cart);
+      
     }
    
-
     useEffect(()=>{
         getCartFromLS();
-        addToCart();
+       
     }, [])
-    
 
     return (
         <div>
            <div className='grid m-auto w-full xl:grid-cols-4 gap-10 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1'>
             { products && products.map((produce, index) => (
                     
-                    <div className='w-[300px]  h-[300px] m-auto bg-[grey] shadow-2xl'>
+                    <div className='w-[300px]  h-[300px] m-auto bg-[grey] shadow-2xl' key={index}>
                         <div className='w-full h-[200px] m-auto rounded-lg'><img className='w-full h-full ' src={produce.Image}/></div>
                         <p className='text-black text-center p-[16px]'> USD {produce.price}</p>
                         <div className='w-full px-[20px]'>
-                            <button className='m-auto w-full bg-blue-200 p-[8px]' onClick={addToCart}> Add to cart</button>
+                            <button className='m-auto w-full bg-blue-200 p-[8px]' onClick={()=>addToCart(produce.id)}> Add to cart</button>
                         </div>    
                     </div>
                 ))
@@ -104,16 +111,16 @@ const Product = ()=> {
 
             <div className='bg-gray-300 my-[50px]'>
                <p className='text-[20px] text-center p-[20px]'>MY CART </p>
-               <div className='grid m-auto w-full xl:grid-cols-4 gap-10 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1'>
+               <div className='grid m-auto w-full xl:grid-cols-4 gap-10 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1' >
                     { cart   && cart.map((myCart, index) => (                            
-                        <div className='w-[250px]  h-[300px] m-auto bg-[grey] shadow-2xl'>
+                        <div className='w-[250px]  h-[300px] m-auto bg-[grey] shadow-2xl' key={index}>
                             <div className='w-full h-[200px] m-auto rounded-lg'>
                                 <img className='w-full h-full ' src={myCart.Image}/>
                             </div>
                             <p className='text-black text-center pt-[5px]'> USD {myCart.name}</p>
                             <p className='text-black text-center pt-[5px]'> USD {myCart.price}</p>
                             <div className='w-full px-[20px]'>
-                                <button className='m-auto w-full p-[8px]' onClick={()=> removeFromCart(index)}> remove</button>    
+                                <button className='m-auto w-full p-[8px]' onClick={()=>removeFromCart(index)}> remove</button>    
                             </div>    
                         </div>                                
                         ))
