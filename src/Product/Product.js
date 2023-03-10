@@ -11,9 +11,12 @@ const Product = ()=> {
     
     const [cart, setCart] = useState([]);
 
+    //Array that holds the localStorage items
+    let cartList = JSON.parse(localStorage.getItem('cart-Items') || '[]');
+    
     const getCartFromLS =()=>{
-        setCart(JSON.parse(localStorage.getItem('cart-Items') || '[]'))
-        console.log("working");
+        //Set localStorage items in cart variable
+        setCart(cartList)
     }
 
     const products = [
@@ -50,17 +53,13 @@ const Product = ()=> {
         }
         
     ]
-    let cartItems = [];
-    let cartList = [];
     
     const submitHandler = (e) =>{
-       
-        localStorage.setItem('cart-Items', JSON.stringify(cartItems));
-        cartList.push(JSON.parse(localStorage.getItem('cart-Items') || '[]'));
-       console.log(cartList);
-       console.log(cartItems);
+        //Set local storage
+        localStorage.setItem('cart-Items', JSON.stringify(cartList));
 
-
+        //Call the getCartFromLS() to update cart variable
+        getCartFromLS()
     }
 
     const addToCart = (id) =>{
@@ -69,21 +68,20 @@ const Product = ()=> {
             return product.id ===  id ;
         }
         const finder = products.find(findProduct);
-        cartItems.push(finder);
-        cartList.push({cart, finder} );
-        console.log(cartList);
-        // console.log(cart);
+      
+        //Push the new item into the Global array that holds the cart items
+        cartList.push({...finder})
+        
+        //Call submit handler
         submitHandler();        
     }
     
   
     const removeFromCart=(index)=>{
-        console.log(cartList);
+
         const newCart = cart.filter((carted, idx) => idx !== index)
         localStorage.setItem('cart-Items', JSON.stringify(newCart));
         setCart(newCart);
-        console.log(newCart);
-        console.log(cart);
       
     }
    
@@ -98,7 +96,7 @@ const Product = ()=> {
             { products && products.map((produce, index) => (
                     
                     <div className='w-[300px]  h-[300px] m-auto bg-[grey] shadow-2xl' key={index}>
-                        <div className='w-full h-[200px] m-auto rounded-lg'><img className='w-full h-full ' src={produce.Image}/></div>
+                        <div className='w-full h-[200px] m-auto rounded-lg'><img className='w-full h-full ' src={produce.Image} alt="Product"/></div>
                         <p className='text-black text-center p-[16px]'> USD {produce.price}</p>
                         <div className='w-full px-[20px]'>
                             <button className='m-auto w-full bg-blue-200 p-[8px]' onClick={()=>addToCart(produce.id)}> Add to cart</button>
@@ -115,7 +113,7 @@ const Product = ()=> {
                     { cart   && cart.map((myCart, index) => (                            
                         <div className='w-[250px]  h-[300px] m-auto bg-[grey] shadow-2xl' key={index}>
                             <div className='w-full h-[200px] m-auto rounded-lg'>
-                                <img className='w-full h-full ' src={myCart.Image}/>
+                                <img className='w-full h-full ' src={myCart.Image} alt="Product" />
                             </div>
                             <p className='text-black text-center pt-[5px]'> USD {myCart.name}</p>
                             <p className='text-black text-center pt-[5px]'> USD {myCart.price}</p>
